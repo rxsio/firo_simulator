@@ -1,0 +1,39 @@
+<launch>
+    
+    <!-- Gazebo args -->
+    <arg name="debug" default="false"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="world_name" default=""/>
+
+    <!-- URDF -->
+    <arg name="camera_calibration_path" default="$(find firo_calibration)/kalibr/camimu/inflated/camimu-camchain-imucam.yaml"/>
+    <arg name="imu_frequency"         default="200.0" />
+    <arg name="model" default="$(find firo_description)/robots/firo.urdf.xacro"/>
+    <arg name="publish_frequency" default="100"  />
+    <arg name="stereo_fps"            default="30"  />
+
+    
+    <param name="use_sim_time" command="$(arg use_sim_time)" />
+    
+    <include file="$(find firo_description)/launch/firo_description.launch" pass_all_args="true"/>
+    
+    <remap from="/firo/controller/wheels/cmd_vel" to="/cmd_vel" />
+    <remap from="/firo/controller/wheels/odom" to="/wheels/odom" />
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="headless" value="$(arg headless)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="world_name" value="$(arg world_name)"/>
+    </include>
+
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-z 0 -unpause -urdf -model robot -param robot_description" respawn="false" output="screen" />
+
+    <include file="$(find firo_control)/launch/controllers.launch"/>
+</launch>

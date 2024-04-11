@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>firo_gazebo</name>
+  <version>1.0.0</version>
+  <description>FIRO gazebo launch files</description>
+  <maintainer email="gabriel@gabrielb.dev">Gabriel Brzeziński</maintainer>
+
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>firo_calibration</exec_depend>
+  <exec_depend>firo_control</exec_depend>
+  <exec_depend>firo_description</exec_depend>
+  <exec_depend>firo_gazebo_plugins</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+
+</package>
