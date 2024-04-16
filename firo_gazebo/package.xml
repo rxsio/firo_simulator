@@ -13,5 +13,7 @@
   <exec_depend>firo_description</exec_depend>
   <exec_depend>firo_gazebo_plugins</exec_depend>
   <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>imu_filter_madgwick</exec_depend>
+  <exec_depend>imu_transformer</exec_depend>
 
 </package>

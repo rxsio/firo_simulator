@@ -36,4 +36,32 @@
         args="-z 0 -unpause -urdf -model robot -param robot_description" respawn="false" output="screen" />
 
     <include file="$(find firo_control)/launch/controllers.launch"/>
+
+    <!-- Using IMU filter better mimics the physical device, -->
+    <!-- then using absolute IMU orientation with noise from gazebo -->
+    <node name="imu_fusion" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+        <param name="use_mag" value="false"/>
+        <!-- Unfortunatelly, we can set covariance only to all axes at once -->
+        <!-- However, roll and pitch are not as important as yaw, so we focus on the latter -->
+        <!-- In EKF node we fuse yaw data in differentiall mode, which heuristically calculates -->
+        <!-- the resulting twist covariance from position covariance -->
+        <!-- Assuming we know the desired twist covariance, we can set the orientation_stddev -->
+        <!-- parameter according to the following formula: -->
+        <!-- orientation_stddev = sqrt(twist_covariance * imu_frequency / 2) -->
+        <param name="orientation_stddev" value="0.01"/>
+        <param name="world_frame" value="enu"/>
+        <param name="publish_tf" value="false"/>
+        <param name="remove_gravity_vector" value="true"/>
+        <remap from="imu/data_raw" to="/front_camera/imu/data"/>
+        <remap from="imu/mag" to="/front_camera/imu/mag"/>
+        <remap from="imu/data" to="/front_camera/imu_compensated/data"/>
+    </node>
+
+    <!-- We transform the imu data to the base_link frame, so it can be properly used by the EKF node -->
+    <!-- It is required, because the EKF node assumes that the imu is planar to the robot base -->
+    <node name="imu_data_transformer" pkg="imu_transformer" type="imu_transformer_node" output="screen">
+        <remap from="imu_in/data" to="/front_camera/imu_compensated/data"/>
+        <remap from="imu_out/data" to="/imu_compensated/data"/>
+        <param name="target_frame" value="base_link"/>
+    </node>
 </launch>
