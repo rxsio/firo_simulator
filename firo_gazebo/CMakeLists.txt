@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.16.3...3.28.1)
+cmake_minimum_required(VERSION 3.22.1...3.30.1)
 project(firo_gazebo)
-find_package(catkin REQUIRED)
-catkin_package()
+find_package(ament_cmake REQUIRED)
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME}/)
+ament_package()

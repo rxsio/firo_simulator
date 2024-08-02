@@ -1,0 +1,90 @@
+<launch>
+    <!-- Gazebo parameters -->
+    <arg name="world_sdf_file" default="empty.sdf" />
+    <arg name="world_sdf_string" default="" />
+    <arg name="container_name" default="ros_gz_container" />
+    <arg name="use_composition" default="True" />
+
+    <!-- Gazebo args -->
+    <arg name="gazebo_version" default="" />
+    <arg name="headless_rendering" default="" />
+    <arg name="initial_sim_time" default="" />
+    <arg name="pause" default="False" />
+    <arg name="physics_engine" default="" />
+    <arg name="seed" default="" />
+    <arg name="update_rate" default="" />
+    <arg name="verbose" default="1" />
+
+    <!-- Set use_sim_time parameter to true by default -->
+    <arg name="use_sim_time" default="True" />
+    <set_parameter name="use_sim_time" value="$(var use_sim_time)" />
+
+    <include file="$(find-pkg-share firo_gazebo)/launch/gz_sim.launch">
+        <arg name="world_sdf_file" value="$(var world_sdf_file)" />
+        <arg name="world_sdf_string" value="$(var world_sdf_string)" />
+        <arg name="container_name" value="$(var container_name)" />
+        <arg name="use_composition" value="$(var use_composition)" />
+
+        <arg name="gazebo_version" value="$(var gazebo_version)" />
+        <arg name="headless_rendering" value="$(var headless_rendering)" />
+        <arg name="initial_sim_time" value="$(var initial_sim_time)" />
+        <!-- <arg name="only_server" value="True" /> -->
+        <arg name="pause" value="$(var pause)" />
+        <arg name="physics_engine" value="$(var physics_engine)" />
+        <arg name="seed" value="$(var seed)" />
+        <arg name="update_rate" value="$(var update_rate)" />
+        <arg name="verbose" value="$(var verbose)" />
+    </include>
+
+
+
+    <include file="$(find-pkg-share firo_description)/launch/firo_description.launch" />
+
+
+
+
+    <node pkg="ros_gz_sim" exec="create">
+        <!-- <param name="world" value="world" /> -->
+        <param name="file" value="$(find-pkg-share firo_gazebo)/worlds/empty.sdf" />
+        <param name="topic" value="/robot_description" />
+        <param name="name" value="FIRO2" />
+        <!-- <param name="allow_renaming" value="True" /> -->
+        <!-- <param name="x" value="0" />
+        <param name="y" value="0" />
+        <param name="z" value="0" />
+        <param name="R" value="0" />
+        <param name="P" value="0" />
+        <param name="Y" value="0" /> -->
+    </node>
+
+
+    <!-- <include file="$(find firo_control)/launch/controllers.launch"/> -->
+
+    <!-- Using IMU filter better mimics the physical device, -->
+    <!-- then using absolute IMU orientation with noise from gazebo -->
+    <!-- <node name="imu_fusion" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+        <param name="use_mag" value="False"/> -->
+    <!-- Unfortunatelly, we can set covariance only to all axes at once -->
+    <!-- However, roll and pitch are not as important as yaw, so we focus on the latter -->
+    <!-- In EKF node we fuse yaw data in differentiall mode, which heuristically calculates -->
+    <!-- the resulting twist covariance from position covariance -->
+    <!-- Assuming we know the desired twist covariance, we can set the orientation_stddev -->
+    <!-- parameter according to the following formula: -->
+    <!-- orientation_stddev = sqrt(twist_covariance * imu_frequency / 2) -->
+    <!-- <param name="orientation_stddev" value="0.01"/>
+        <param name="world_frame" value="enu"/>
+        <param name="publish_tf" value="False"/>
+        <param name="remove_gravity_vector" value="True"/>
+        <remap from="imu/data_raw" to="/front_camera/imu/data"/>
+        <remap from="imu/mag" to="/front_camera/imu/mag"/>
+        <remap from="imu/data" to="/front_camera/imu_compensated/data"/>
+    </node> -->
+
+    <!-- We transform the imu data to the base_link frame, so it can be properly used by the EKF node -->
+    <!-- It is required, because the EKF node assumes that the imu is planar to the robot base -->
+    <!-- <node name="imu_data_transformer" pkg="imu_transformer" type="imu_transformer_node" output="screen">
+        <remap from="imu_in/data" to="/front_camera/imu_compensated/data"/>
+        <remap from="imu_out/data" to="/imu_compensated/data"/>
+        <param name="target_frame" value="base_link"/>
+    </node> -->
+</launch>
