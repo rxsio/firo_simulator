@@ -43,11 +43,10 @@
 
 
 
-    <node pkg="ros_gz_sim" exec="create">
+    <node pkg="ros_gz_sim" exec="create" args="--topic /robot_description --name FIRO2" output="screen">
         <!-- <param name="world" value="world" /> -->
-        <param name="file" value="$(find-pkg-share firo_gazebo)/worlds/empty.sdf" />
-        <param name="topic" value="/robot_description" />
-        <param name="name" value="FIRO2" />
+        <!-- <param name="topic" value="/robot_description" /> -->
+        <!-- <param name="name" value="FIRO2" /> -->
         <!-- <param name="allow_renaming" value="True" /> -->
         <!-- <param name="x" value="0" />
         <param name="y" value="0" />
