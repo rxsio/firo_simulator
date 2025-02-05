@@ -1,13 +1,11 @@
 <launch>
 
     <!-- Gazebo parameters -->
-    <arg name="world_sdf_file" default="empty.sdf" />
-    <arg name="world_sdf_string" default="" />
-    <arg name="container_name" default="ros_gz_container" />
-    <arg name="use_composition" default="True" />
+    <arg name="world_sdf_file" default="default.sdf" />
 
     <!-- Gazebo args -->
     <arg name="gazebo_version" default="" />
+    <arg name="gui_config" default="" />
     <arg name="headless_rendering" default="" />
     <arg name="initial_sim_time" default="" />
     <arg name="only_gui" default="False" />
@@ -24,27 +22,29 @@
 
     <group>
         <!--Define flags-->
-        <let name="f_gazebo_version" value="$(eval &quot; '--force-version $(var gazebo_version)' if str($(var gazebo_version)) else '' &quot;)" />
+        <let name="f_gui_config" value="$(eval &quot; '--gui-config $(var gui_config)' if str($(var gui_config)) else '' &quot;)" />
         <let name="f_gui" value="$(eval &quot; '-g' if bool($(var only_gui)) else '' &quot;)" />
         <let name="f_headless_rendering" value="$(eval &quot; '--headless-rendering=True' if bool($(var headless_rendering)) else '' &quot;)" />
-        <let name="f_initial_sim_time" value="$(eval &quot; '--initial-sim-time $(var initial_sim_time)' if str($(var initial_sim_time)) else '' &quot;)" />
         <let name="f_pause" value="$(eval &quot; '-r' if $(var pause) == False else '' &quot;)" />
         <let name="f_physics_engine" value="$(eval &quot; '--physics-engine $(var physics_engine)' if str($(var physics_engine)) else '' &quot;)" />
-        <let name="f_seed" value="$(eval &quot; '--seed $(var seed)' if str($(var seed)) else '' &quot;)" />
-        <let name="f_update_rate" value="$(eval &quot; '-z $(var update_rate)' if str($(var update_rate)) else '' &quot;)" />
         <let name="f_server" value="$(eval &quot; '-s' if $(var only_server) == True else '' &quot;)" />
+        <let name="f_update_rate" value="$(eval &quot; '-z $(var update_rate)' if str($(var update_rate)) else '' &quot;)" />
         <let name="f_verbose" value="--verbose=$(var verbose)" />
 
         <!--Concatenate flags -->
-        <let name="gz_args" value="$(var f_gazebo_version) $(var f_gui) $(var f_headless_rendering) $(var f_initial_sim_time) $(var f_pause) $(var f_physics_engine) $(var f_seed) $(var f_server) $(var f_update_rate) $(var f_verbose)" />
+        <let name="gz_args" value="$(var f_gui_config) $(var f_gui) $(var f_headless_rendering) $(var f_pause) $(var f_physics_engine) $(var f_server) $(var f_update_rate) $(var f_verbose) $(var world_sdf_file)" />
 
         <!--Include gazebosim launch file -->
-        <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
-            <arg name="world_sdf_file" value="$(var world_sdf_file)" />
-            <arg name="world_sdf_string" value="$(var world_sdf_string)" />
-            <arg name="container_name" value="$(var container_name)" />
-            <arg name="use_composition" value="$(var use_composition)" />
-            <arg name="gz_args" value="$(var gz_args)" />
-        </include>
+        <group if="$(eval 'bool($(var gazebo_version))')">
+            <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+                <arg name="gz_args" value="$(var gz_args)" />
+                <arg name="gz_version" value="$(var gazebo_version)" />
+            </include>
+        </group>
+        <group unless="$(eval 'bool($(var gazebo_version))')">
+            <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+                <arg name="gz_args" value="$(var gz_args)" />
+            </include>
+        </group>
     </group>
 </launch>
