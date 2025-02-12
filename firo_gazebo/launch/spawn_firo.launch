@@ -1,0 +1,15 @@
+<launch>
+        <arg name="x" default="0"/>
+        <arg name="y" default="0"/>
+        <arg name="z" default="0"/>
+        <arg name="R" default="0"/>
+        <arg name="P" default="0"/>
+        <arg name="Y" default="0"/>
+        <arg name="name" default="FIRO2"/>
+
+        <!-- Set use_sim_time parameter to true by default -->
+        <arg name="use_sim_time" default="True" />
+        <set_parameter name="use_sim_time" value="$(var use_sim_time)" />
+
+        <node pkg="ros_gz_sim" exec="create" args="--topic /robot_description --name $(var name) --x $(var x) --y $(var y) --z $(var z) --R $(var R) --P $(var P) --Y $(var Y)" output="screen" />
+</launch>
