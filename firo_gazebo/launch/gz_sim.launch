@@ -1,18 +1,13 @@
 <launch>
-
-    <!-- Gazebo parameters -->
-    <arg name="world_sdf_file" default="default.sdf" />
-
     <!-- Gazebo args -->
+    <arg name="world_sdf_file" default="default.sdf" />
     <arg name="gazebo_version" default="" />
     <arg name="gui_config" default="" />
     <arg name="headless_rendering" default="" />
-    <arg name="initial_sim_time" default="" />
     <arg name="only_gui" default="False" />
     <arg name="only_server" default="False" />
     <arg name="pause" default="False" />
     <arg name="physics_engine" default="" />
-    <arg name="seed" default="" />
     <arg name="update_rate" default="" />
     <arg name="verbose" default="1" />
 
@@ -24,7 +19,7 @@
         <!--Define flags-->
         <let name="f_gui_config" value="$(eval &quot; '--gui-config $(var gui_config)' if str($(var gui_config)) else '' &quot;)" />
         <let name="f_gui" value="$(eval &quot; '-g' if bool($(var only_gui)) else '' &quot;)" />
-        <let name="f_headless_rendering" value="$(eval &quot; '--headless-rendering=True' if bool($(var headless_rendering)) else '' &quot;)" />
+        <let name="f_headless_rendering" value="$(eval &quot; '--headless-rendering' if bool($(var headless_rendering)) else '' &quot;)" />
         <let name="f_pause" value="$(eval &quot; '-r' if $(var pause) == False else '' &quot;)" />
         <let name="f_physics_engine" value="$(eval &quot; '--physics-engine $(var physics_engine)' if str($(var physics_engine)) else '' &quot;)" />
         <let name="f_server" value="$(eval &quot; '-s' if $(var only_server) == True else '' &quot;)" />
