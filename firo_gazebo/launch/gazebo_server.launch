@@ -1,17 +1,11 @@
 <launch>
-    <!-- Gazebo parameters -->
-    <arg name="world_sdf_file" default="empty.sdf" />
-    <arg name="world_sdf_string" default="" />
-    <arg name="container_name" default="ros_gz_container" />
-    <arg name="use_composition" default="True" />
-
     <!-- Gazebo args -->
+    <arg name="world_sdf_file" default="default.sdf" />
     <arg name="gazebo_version" default="" />
+    <arg name="gui_config" default="" />
     <arg name="headless_rendering" default="" />
-    <arg name="initial_sim_time" default="" />
     <arg name="pause" default="False" />
     <arg name="physics_engine" default="" />
-    <arg name="seed" default="" />
     <arg name="update_rate" default="" />
     <arg name="verbose" default="1" />
 
@@ -21,17 +15,12 @@
 
     <include file="$(find-pkg-share firo_gazebo)/launch/gz_sim.launch">
         <arg name="world_sdf_file" value="$(var world_sdf_file)" />
-        <arg name="world_sdf_string" value="$(var world_sdf_string)" />
-        <arg name="container_name" value="$(var container_name)" />
-        <arg name="use_composition" value="$(var use_composition)" />
-
         <arg name="gazebo_version" value="$(var gazebo_version)" />
+        <arg name="gui_config" value="$(var gui_config)" />
         <arg name="headless_rendering" value="$(var headless_rendering)" />
-        <arg name="initial_sim_time" value="$(var initial_sim_time)" />
-        <!-- <arg name="only_server" value="True" /> -->
+        <arg name="only_server" value="True" />
         <arg name="pause" value="$(var pause)" />
         <arg name="physics_engine" value="$(var physics_engine)" />
-        <arg name="seed" value="$(var seed)" />
         <arg name="update_rate" value="$(var update_rate)" />
         <arg name="verbose" value="$(var verbose)" />
     </include>
