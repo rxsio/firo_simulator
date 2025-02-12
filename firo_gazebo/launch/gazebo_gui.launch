@@ -1,0 +1,17 @@
+<launch>
+        <!-- Gazebo args -->
+        <arg name="gazebo_version" default="" />
+        <arg name="gui_config" default="" />
+        <arg name="verbose" default="1" />
+
+        <!-- Set use_sim_time parameter to true by default -->
+        <arg name="use_sim_time" default="True" />
+        <set_parameter name="use_sim_time" value="$(var use_sim_time)" />
+
+        <include file="$(find-pkg-share firo_gazebo)/launch/gz_sim.launch">
+                <arg name="gazebo_version" value="$(var gazebo_version)" />
+                <arg name="gui_config" value="$(var gui_config)" />
+                <arg name="only_gui" value="True" />
+                <arg name="verbose" value="$(var verbose)" />
+        </include>
+</launch>
