@@ -2,7 +2,6 @@
     <!-- Gazebo args -->
     <arg name="world_sdf_file" default="default.sdf" />
     <arg name="gazebo_version" default="" />
-    <arg name="gui_config" default="" />
     <arg name="headless_rendering" default="" />
     <arg name="pause" default="False" />
     <arg name="physics_engine" default="" />
@@ -16,7 +15,6 @@
     <include file="$(find-pkg-share firo_gazebo)/launch/gz_sim.launch">
         <arg name="world_sdf_file" value="$(var world_sdf_file)" />
         <arg name="gazebo_version" value="$(var gazebo_version)" />
-        <arg name="gui_config" value="$(var gui_config)" />
         <arg name="headless_rendering" value="$(var headless_rendering)" />
         <arg name="only_server" value="True" />
         <arg name="pause" value="$(var pause)" />
