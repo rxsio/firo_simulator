@@ -1,0 +1,68 @@
+<launch>
+        <!-- Gazebo args -->
+        <arg name="world_sdf_file" default="default.sdf" />
+        <arg name="gazebo_version" default="" />
+        <arg name="gui_config" default="" />
+        <arg name="headless_rendering" default="" />
+        <arg name="only_gui" default="False" />
+        <arg name="only_server" default="False" />
+        <arg name="pause" default="False" />
+        <arg name="physics_engine" default="" />
+        <arg name="update_rate" default="" />
+        <arg name="verbose" default="1" />
+        <!-- Spawn coordinates -->
+        <arg name="x" default="0"/>
+        <arg name="y" default="0"/>
+        <arg name="z" default="0"/>
+        <arg name="R" default="0"/>
+        <arg name="P" default="0"/>
+        <arg name="Y" default="0"/>
+
+        <!-- Set use_sim_time parameter to true by default -->
+        <arg name="use_sim_time" default="True" />
+        <set_parameter name="use_sim_time" value="$(var use_sim_time)" />
+
+        <group>
+                <include file="$(find-pkg-share firo_description)/launch/firo_description.launch">
+                        <arg name="gazebo" value="True" />
+                </include>
+        </group>
+
+        <!-- Include gazebo server -->
+        <group>
+                <include file="$(find-pkg-share firo_gazebo)/launch/gazebo_server.launch">
+                        <arg name="world_sdf_file" value="$(var world_sdf_file)" />
+                        <arg name="gazebo_version" value="$(var gazebo_version)" />
+                        <arg name="headless_rendering" value="$(var headless_rendering)" />
+                        <arg name="pause" value="$(var pause)" />
+                        <arg name="physics_engine" value="$(var physics_engine)" />
+                        <arg name="update_rate" value="$(var update_rate)" />
+                        <arg name="verbose" value="$(var verbose)" />
+                </include>
+        </group>
+
+        <!-- Spawn the robot -->
+        <group>
+                <include file="$(find-pkg-share firo_gazebo)/launch/spawn_firo.launch">
+                        <arg name="x" value="$(var x)" />
+                        <arg name="y" value="$(var y)" />
+                        <arg name="z" value="$(var z)" />
+                        <arg name="R" value="$(var R)" />
+                        <arg name="P" value="$(var P)" />
+                        <arg name="Y" value="$(var Y)" />
+                </include>
+        </group>
+
+        <group>
+                <include file="$(find-pkg-share firo_control)/launch/controllers.launch"/>
+        </group>
+
+        <!-- Include gazebo gui -->
+        <group>
+                <include file="$(find-pkg-share firo_gazebo)/launch/gazebo_gui.launch">
+                        <arg name="gazebo_version" value="$(var gazebo_version)" />
+                        <arg name="gui_config" value="$(var gui_config)" />
+                        <arg name="verbose" value="$(var verbose)" />
+                </include>
+        </group>
+</launch>
