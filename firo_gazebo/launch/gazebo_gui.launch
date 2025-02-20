@@ -1,3 +1,6 @@
+<!--
+This launch file launches just the gazebo gui. It's generic.
+-->
 <launch>
         <!-- Gazebo args -->
         <arg name="gazebo_version" default="" />

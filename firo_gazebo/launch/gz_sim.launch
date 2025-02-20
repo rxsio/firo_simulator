@@ -1,3 +1,8 @@
+<!-- 
+This launch file is just a convenient wrapper around the gz_sim.launch.py 
+It breaks down one "gz_args" argument into multiple launch arguments
+If you are reading this, please check if this launch file is still necessary
+-->
 <launch>
     <!-- Gazebo args -->
     <arg name="world_sdf_file" default="default.sdf" />

@@ -1,0 +1,29 @@
+- topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  lazy: false
+  direction: GZ_TO_ROS
+
+- topic_name: "/front_camera/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  lazy: false
+  direction: GZ_TO_ROS
+
+- topic_name: "/front_camera/depth_registered/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  lazy: false
+  direction: GZ_TO_ROS
+
+- topic_name: "/front_camera/right/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  lazy: false
+  direction: GZ_TO_ROS
+
+- topic_name: "/front_camera/left/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "ignition.msgs.CameraInfo"
+  lazy: false
+  direction: GZ_TO_ROS

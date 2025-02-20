@@ -1,6 +1,6 @@
 <launch>
         <!-- Gazebo args -->
-        <arg name="world_sdf_file" default="default.sdf" />
+        <arg name="world_sdf_file" default="$(find-pkg-share firo_gazebo)/world/default.sdf" />
         <arg name="gazebo_version" default="" />
         <arg name="gui_config" default="" />
         <arg name="headless_rendering" default="" />
@@ -9,6 +9,9 @@
         <arg name="physics_engine" default="" />
         <arg name="update_rate" default="" />
         <arg name="verbose" default="1" />
+        <!-- gazebo<->ros bridge -->
+        <arg name="config_file" default="$(find-pkg-share firo_gazebo)/config/bridge.yaml" />
+        <arg name="subscribe_hearbeat" default="" />
         <!-- Spawn coordinates -->
         <arg name="x" default="0"/>
         <arg name="y" default="0"/>
@@ -56,12 +59,61 @@
                 <include file="$(find-pkg-share firo_control)/launch/controllers.launch"/>
         </group>
 
+        <node pkg="ros_gz_bridge" exec="parameter_bridge" name="gz_bridge" output="screen" if="$(eval &quot; '$(var subscribe_hearbeat)' != '' &quot;)">
+                <param name="config_file" value="$(var config_file)"/>
+                <param name="expand_gz_topic_names" value="True"/>
+                <param name="subscription_hearbeat" value="$(var subscribe_hearbeat)"/>
+        </node>
+
+        <node pkg="ros_gz_bridge" exec="parameter_bridge" name="gz_bridge" output="screen" unless="$(eval &quot; '$(var subscribe_hearbeat)' != '' &quot;)">
+                <param name="config_file" value="$(var config_file)"/>
+                <param name="expand_gz_topic_names" value="True"/>
+        </node>
+
+        <!-- <node pkg="ros_gz_image" exec="image_bridge" name="image_bridge_left" output="screen">
+                <param name="topic" value="/front_camera/left/image_rect"/>
+        </node>
+        <node pkg="ros_gz_image" exec="image_bridge" name="image_bridge_right" output="screen">
+                <param name="topic" value="/front_camera/right/image_rect"/>
+        </node>
+        <node pkg="ros_gz_image" exec="image_bridge" name="image_bridge_depth" output="screen">
+                <param name="topic" value="/front_camera/depth_registered/image"/>
+        </node> -->
+
         <!-- Include gazebo gui -->
-        <group unless="$(arg only_server)">
+        <group unless="$(var only_server)">
                 <include file="$(find-pkg-share firo_gazebo)/launch/gazebo_gui.launch">
                         <arg name="gazebo_version" value="$(var gazebo_version)" />
                         <arg name="gui_config" value="$(var gui_config)" />
                         <arg name="verbose" value="$(var verbose)" />
                 </include>
         </group>
+
+        <!-- Using IMU filter better mimics the physical device, -->
+        <!-- then using absolute IMU orientation with noise from gazebo -->
+        <!-- <node name="imu_fusion" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+        <param name="use_mag" value="False"/> -->
+        <!-- Unfortunatelly, we can set covariance only to all axes at once -->
+        <!-- However, roll and pitch are not as important as yaw, so we focus on the latter -->
+        <!-- In EKF node we fuse yaw data in differentiall mode, which heuristically calculates -->
+        <!-- the resulting twist covariance from position covariance -->
+        <!-- Assuming we know the desired twist covariance, we can set the orientation_stddev -->
+        <!-- parameter according to the following formula: -->
+        <!-- orientation_stddev = sqrt(twist_covariance * imu_frequency / 2) -->
+        <!-- <param name="orientation_stddev" value="0.01"/>
+        <param name="world_frame" value="enu"/>
+        <param name="publish_tf" value="False"/>
+        <param name="remove_gravity_vector" value="True"/>
+        <remap from="imu/data_raw" to="/front_camera/imu/data"/>
+        <remap from="imu/mag" to="/front_camera/imu/mag"/>
+        <remap from="imu/data" to="/front_camera/imu_compensated/data"/>
+    </node> -->
+
+        <!-- We transform the imu data to the base_link frame, so it can be properly used by the EKF node -->
+        <!-- It is required, because the EKF node assumes that the imu is planar to the robot base -->
+        <!-- <node name="imu_data_transformer" pkg="imu_transformer" type="imu_transformer_node" output="screen">
+        <remap from="imu_in/data" to="/front_camera/imu_compensated/data"/>
+        <remap from="imu_out/data" to="/imu_compensated/data"/>
+        <param name="target_frame" value="base_link"/>
+    </node> -->
 </launch>
